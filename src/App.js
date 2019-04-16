@@ -1,28 +1,53 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React, {Component} from 'react';
 import './App.css';
+import List from './components/List';
 
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+
+    state = {
+        list: [{index: 0, title: 'A'}, {index: 1, title: 'B'}, {index: 2, title: 'C'}, {index: 3, title: 'D'}],
+        cards: [],
+        cardIndex: 0
+    }
+
+    handleAdd(listIndex) {
+        let contents = prompt('내용을 입력하세요.');
+        this.setState({
+            cards: [...this.state.cards, {index: this.state.cardIndex, listIndex, contents}],
+            cardIndex: this.state.cardIndex + 1
+        });
+    }
+
+    handleMove(listIndex, cardIndex) {
+        let changeCard = {
+            index: cardIndex,
+            listIndex,
+            contents: this.state.cards.find(val => val.index === cardIndex).contents
+        };
+
+        this.setState({
+            cards: [...this.state.cards.filter(val => val.index !== cardIndex), changeCard]
+        });
+    }
+
+    render() {
+        return (
+            <div className="App">
+                {this.state.list.map((com, i) => {
+                    return <List
+                        key={com.index}
+                        title={com.title}
+                        listIndex={com.index}
+                        cards={this.state.cards}
+                        handleAdd={this.handleAdd.bind(this)}
+                        isFirst={i === 0}
+                        isLast={i === this.state.list.length - 1}
+                        handleMove={this.handleMove.bind(this)}
+                    />
+                })}
+            </div>
+        );
+    }
 }
 
 export default App;
